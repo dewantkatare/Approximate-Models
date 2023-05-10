@@ -1,41 +1,34 @@
 import tensorflow as tf
 from tensorflow.keras import layers
+from tensorflow.keras.applications import VGG16
 
-# Define the SSD model architecture
-def SSD(input_shape, num_classes):
-    # Define the input layer
-    inputs = tf.keras.Input(shape=input_shape)
+def ssd_vgg16(num_classes):
+    # Load the VGG16 base model
+    base_model = VGG16(include_top=False, weights='imagenet', input_shape=(300, 300, 3))
 
-    # Define the VGG16 base network
-    base_model = tf.keras.applications.VGG16(include_top=False, weights='imagenet')
-    conv4 = base_model.get_layer('block4_conv3').output
-    conv7 = base_model.get_layer('block5_conv3').output
+    # Add additional convolutional layers on top of the base model
+    x = base_model.output
+    x = layers.Conv2D(1024, kernel_size=3, activation='relu', padding='same', name='conv6')(x)
+    x = layers.Conv2D(1024, kernel_size=1, activation='relu', padding='same', name='conv7')(x)
 
-    # Define the extra feature layers
-    conv8_1 = layers.Conv2D(256, (1, 1), activation='relu', padding='same', name='conv8_1')(conv7)
-    conv8_2 = layers.Conv2D(512, (3, 3), strides=(2, 2), activation='relu', padding='same', name='conv8_2')(conv8_1)
+    # Add convolutional layers for object detection
+    num_anchors = 4
+    x = layers.Conv2D(num_anchors * (num_classes + 4), kernel_size=3, padding='same', name='conv8')(x)
 
-    conv9_1 = layers.Conv2D(128, (1, 1), activation='relu', padding='same', name='conv9_1')(conv8_2)
-    conv9_2 = layers.Conv2D(256, (3, 3), strides=(2, 2), activation='relu', padding='same', name='conv9_2')(conv9_1)
+    # Reshape the output tensor
+    x = layers.Reshape((-1, num_classes + 4))(x)
 
-    conv10_1 = layers.Conv2D(128, (1, 1), activation='relu', padding='same', name='conv10_1')(conv9_2)
-    conv10_2 = layers.Conv2D(256, (3, 3), strides=(2, 2), activation='relu', padding='same', name='conv10_2')(conv10_1)
+    # Create the SSD model
+    model = tf.keras.Model(inputs=base_model.input, outputs=x)
 
-    conv11_1 = layers.Conv2D(128, (1, 1), activation='relu', padding='same', name='conv11_1')(conv10_2)
-    conv11_2 = layers.Conv2D(256, (3, 3), strides=(2, 2), activation='relu', padding='same', name='conv11_2')(conv11_1)
-
-    # Define the output layers
-    box_output = layers.Conv2D(num_classes * 4, (3, 3), padding='same', name='box_output')(conv7)
-    class_output = layers.Conv2D(num_classes, (3, 3), padding='same', name='class_output')(conv7)
-
-    # Define the SSD model
-    model = tf.keras.Model(inputs=base_model.input, outputs=[box_output, class_output])
     return model
+
+
 
 # Instantiate the model
 num_classes = 4 # number of object classes
 input_shape = (224, 224, 3) # input image shape
-model = SSD(input_shape, num_classes)
+model = ssd_vgg16(num_classes)
 
 # Compile the model
 optimizer = tf.keras.optimizers.Adam(lr=1e-4)

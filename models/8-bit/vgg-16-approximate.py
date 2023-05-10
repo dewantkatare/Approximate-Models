@@ -81,7 +81,7 @@ def create_approx_vgg16():
     model.add(Flatten())
     model.add(Dense(4096, activation='relu'))
     model.add(Dense(4096, activation='relu'))
-    model.add(Dense(10, activation='softmax'))
+    model.add(Dense(1000, activation='softmax'))
 
     # Convert all the conv and dense layers to 8-bit approximate layers
     for layer in model.layers:

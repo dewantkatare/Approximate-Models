@@ -46,7 +46,7 @@ model = models.Sequential([
     layers.Flatten(),
     layers.Dense(4096, activation='relu'),
     layers.Dense(4096, activation='relu'),
-    layers.Dense(10, activation='softmax')
+    layers.Dense(1000, activation='softmax')
 ])
 
 # Compile the model

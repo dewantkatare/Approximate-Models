@@ -61,7 +61,7 @@ def create_model():
         # Fully connected layers
         tf.keras.layers.Dense(4096, activation='relu'),
         tf.keras.layers.Dense(4096, activation='relu'),
-        tf.keras.layers.Dense(10, activation='softmax')
+        tf.keras.layers.Dense(1000, activation='softmax')
     ])
     
     return model
