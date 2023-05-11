@@ -4,7 +4,7 @@
 
 
 # to run
-Run test-vgg.py
+Run /approximation/#-bit/model.py
 
 #To Add
-Families of ResNet, VGG, SSD, YOLO
+Families of vision transformers
