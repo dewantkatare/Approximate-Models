@@ -71,11 +71,10 @@ def ResNet34(input_shape, num_classes):
 input_shape = (224, 224, 3)
 num_classes = 1000
 
-#model = ResNet34(input_shape, num_classes)
+model = ResNet34(input_shape, num_classes)
 
-#model.compile(optimizer=tf.keras.optimizers.SGD(learning_rate=0.1, momentum=0.9, decay=1e-4),
-              loss=tf.keras.losses.CategoricalCrossentropy(from_logits=False),
-              metrics=[tf.keras.metrics.CategoricalAccuracy()])
+model.compile(optimizer=tf.keras.optimizers.SGD(learning_rate=0.1, momentum=0.9, decay=1e-4),
+              loss=tf.keras.losses.CategoricalCrossentropy(from_logits=False),  metrics=[tf.keras.metrics.CategoricalAccuracy()])
               
 # set batch size, number of classes, and number of epochs
 batch_size = 32
