@@ -7,7 +7,7 @@
 Run /approximation/#-bit/model.py
 
 #To Do
-Families of vision transformers
+Updated code and Families of vision transformers
 
 # 1: Multiplier
 
